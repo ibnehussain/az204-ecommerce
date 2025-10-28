@@ -165,6 +165,8 @@ This is an educational repository. If you find issues or have suggestions:
 
 ## 📝 License
 
+Copyright © 2025 Azhar. All rights reserved.
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
@@ -178,3 +180,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Happy Learning! 🚀**
 
 *This course is designed to give you practical, hands-on experience with Azure services through a realistic application scenario.*
+
+© 2025 Azhar. All rights reserved.

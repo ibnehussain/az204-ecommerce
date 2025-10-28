@@ -18,7 +18,7 @@
     "ecommerce",
     "rest-api"
   ],
-  "author": "Azure Developer Course",
+  "author": "Azhar",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",

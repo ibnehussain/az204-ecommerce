@@ -66,6 +66,35 @@ const Header = () => {
               </span>
             )}
           </Link>
+          
+          {/* Sign In Button (UI only - no functionality yet) */}
+          <button
+            style={{
+              background: 'transparent',
+              border: '2px solid white',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.background = 'white';
+              e.target.style.color = 'var(--primary-color)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.color = 'white';
+            }}
+            onClick={() => {
+              // Placeholder - functionality will be added in Module 05 (Identity/MSAL)
+              alert('Sign In functionality will be added in Module 05 - Identity & Authentication');
+            }}
+          >
+            Sign In
+          </button>
         </nav>
       </div>
     </header>
