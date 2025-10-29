@@ -59,19 +59,35 @@ jobs:
       # Create deployment package
       - name: Create deployment package
         run: |
+          echo "Creating deployment package..."
           mkdir -p deploy-package
-          # Copy backend files (production ready)
-          cp -r src/backend/*.js deploy-package/
+          ls -la src/
+          
+          # Copy backend files
+          echo "Copying backend files..."
+          cp src/backend/*.js deploy-package/ || echo "No .js files found in backend root"
           cp src/backend/package*.json deploy-package/
-          cp -r src/backend/src deploy-package/ 2>/dev/null || true
+          
+          # Copy backend source directory if exists
+          if [ -d "src/backend/src" ]; then
+            cp -r src/backend/src deploy-package/
+            echo "Copied backend src directory"
+          fi
+          
           # Copy frontend build output
+          echo "Checking for frontend build..."
           if [ -d "src/frontend/build" ]; then
+            echo "Found frontend build directory"
             cp -r src/frontend/build deploy-package/public
           else
-            echo "Frontend build directory not found, copying source files"
+            echo "No frontend build directory found, using source"
             mkdir -p deploy-package/public
-            cp -r src/frontend/src deploy-package/public/
+            cp -r src/frontend/public/* deploy-package/public/ 2>/dev/null || true
+            cp -r src/frontend/src deploy-package/public/src/ 2>/dev/null || true
           fi
+          
+          echo "Deploy package contents:"
+          ls -la deploy-package/
           # Create web.config for Azure App Service
           echo '<?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -123,8 +139,23 @@ jobs:
       # Install production dependencies in deployment package
       - name: Install production dependencies
         run: |
-          cd deploy-package
-          npm install --production --no-optional
+          echo "Current directory contents:"
+          ls -la
+          echo "Checking deploy-package directory:"
+          if [ -d "deploy-package" ]; then
+            ls -la deploy-package/
+            cd deploy-package
+            if [ -f "package.json" ]; then
+              echo "Installing production dependencies..."
+              npm install --production --no-optional
+            else
+              echo "No package.json found in deploy-package"
+              exit 1
+            fi
+          else
+            echo "deploy-package directory not found"
+            exit 1
+          fi
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
