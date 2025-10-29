@@ -60,30 +60,44 @@ jobs:
       - name: Create deployment package
         run: |
           echo "Creating deployment package..."
+          echo "Current directory structure:"
+          ls -la
+          
           mkdir -p deploy-package
-          ls -la src/
           
-          # Copy backend files
+          # We're in the artifact directory which contains both frontend and backend
           echo "Copying backend files..."
-          cp src/backend/*.js deploy-package/ || echo "No .js files found in backend root"
-          cp src/backend/package*.json deploy-package/
-          
-          # Copy backend source directory if exists
-          if [ -d "src/backend/src" ]; then
-            cp -r src/backend/src deploy-package/
-            echo "Copied backend src directory"
+          if [ -f "server.js" ]; then
+            # We're in backend directory structure
+            cp *.js deploy-package/ 2>/dev/null || true
+            cp package*.json deploy-package/ 2>/dev/null || true
+            cp -r src deploy-package/ 2>/dev/null || true
+            cp web.config deploy-package/ 2>/dev/null || true
+            echo "Copied backend files from current directory"
+          elif [ -d "src/backend" ]; then
+            # We're in root directory structure  
+            cp src/backend/*.js deploy-package/ 2>/dev/null || true
+            cp src/backend/package*.json deploy-package/
+            cp -r src/backend/src deploy-package/ 2>/dev/null || true
+            echo "Copied backend files from src/backend"
           fi
           
           # Copy frontend build output
-          echo "Checking for frontend build..."
+          echo "Checking for frontend files..."
           if [ -d "src/frontend/build" ]; then
             echo "Found frontend build directory"
             cp -r src/frontend/build deploy-package/public
+          elif [ -d "build" ]; then
+            echo "Found build directory in current path"
+            cp -r build deploy-package/public
           else
-            echo "No frontend build directory found, using source"
+            echo "Using frontend public files"
             mkdir -p deploy-package/public
-            cp -r src/frontend/public/* deploy-package/public/ 2>/dev/null || true
-            cp -r src/frontend/src deploy-package/public/src/ 2>/dev/null || true
+            if [ -d "src/frontend/public" ]; then
+              cp -r src/frontend/public/* deploy-package/public/ 2>/dev/null || true
+            elif [ -d "public" ]; then
+              cp -r public/* deploy-package/public/ 2>/dev/null || true
+            fi
           fi
           
           echo "Deploy package contents:"
