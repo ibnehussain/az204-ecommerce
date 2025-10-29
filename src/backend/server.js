@@ -12,6 +12,9 @@ const morgan = require('morgan');
 const compression = require('compression');
 require('dotenv').config();
 
+// Import routes
+const ordersRoutes = require('./routes/orders');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -177,37 +180,15 @@ app.get('/api/categories', (req, res) => {
   res.json({ categories });
 });
 
-// Orders
-app.post('/api/orders', (req, res) => {
-  const { items, totalAmount, customerInfo } = req.body;
+// Orders routes - Azure Functions integration
+app.use('/api/orders', ordersRoutes);
 
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ error: 'Order must contain items' });
-  }
-
-  if (!totalAmount || !customerInfo) {
-    return res.status(400).json({ error: 'Missing required order information' });
-  }
-
-  const newOrder = {
-    id: (orders.length + 1).toString(),
-    items,
-    totalAmount: parseFloat(totalAmount),
-    customerInfo,
-    status: 'pending',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-
-  orders.push(newOrder);
-  res.status(201).json(newOrder);
-});
-
-app.get('/api/orders', (req, res) => {
+// Legacy orders endpoints for backward compatibility (if needed)
+app.get('/api/orders-legacy', (req, res) => {
   res.json({ orders });
 });
 
-app.get('/api/orders/:id', (req, res) => {
+app.get('/api/orders-legacy/:id', (req, res) => {
   const order = orders.find(o => o.id === req.params.id);
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });

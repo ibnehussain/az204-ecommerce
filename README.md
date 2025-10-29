@@ -6,12 +6,294 @@ This repository contains a progressive e-commerce application that demonstrates 
 
 This hands-on course teaches Azure development through a real-world e-commerce application. Starting with a simple web app, we progressively add Azure services to build a complete, production-ready solution.
 
+---
+
+## 📦 **Module 02: Azure Functions Integration** 
+
+> **Current Branch: `02-functions`** - Serverless order processing with Azure Functions
+
+### What's New in This Module
+
+This module introduces **serverless computing** to our e-commerce application by adding **Azure Functions** for order processing. Instead of handling all business logic in the web app, we now use serverless functions to process orders asynchronously and independently.
+
+#### 🔥 **Key Features Added**
+- **OrderProcessor Azure Function**: HTTP-triggered serverless function for order validation and processing
+- **Backend Integration**: Express.js routes that communicate with Azure Functions via HTTP
+- **Parallel CI/CD**: Independent deployment of App Service and Azure Functions
+- **Service-to-Service Communication**: Demonstrates microservices patterns with serverless architecture
+
+#### 🏗️ **Updated Architecture**
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
+│   React Frontend │────│ Node.js Backend  │────│  Azure Functions    │
+│   (Static Site)  │    │  (App Service)   │    │  (OrderProcessor)   │
+└─────────────────┘    └──────────────────┘    └─────────────────────┘
+         │                        │                        │
+         │                        │                        │
+         ▼                        ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
+│   Azure Blob    │    │ Application      │    │    Monitoring &     │
+│    Storage      │    │    Insights      │    │     Logging        │
+└─────────────────┘    └──────────────────┘    └─────────────────────┘
+```
+
+**Request Flow:**
+1. User submits order via React frontend
+2. Backend receives request at `/api/orders`
+3. Backend forwards request to Azure Function via HTTP
+4. Function validates order and generates order ID
+5. Function returns confirmation to backend
+6. Backend returns response to frontend
+
+### 🔧 **Azure Function Implementation**
+
+#### OrderProcessor Function (`src/functions/OrderProcessor/`)
+```javascript
+// HTTP-triggered Azure Function for order processing
+module.exports = async function (context, req) {
+    context.log('OrderProcessor function triggered');
+    
+    try {
+        // Validate request body
+        if (!req.body || !req.body.productId || !req.body.quantity) {
+            context.res = {
+                status: 400,
+                body: { error: "Missing required fields: productId, quantity" }
+            };
+            return;
+        }
+
+        // Process order (simplified business logic)
+        const order = {
+            orderId: generateOrderId(),
+            productId: req.body.productId,
+            quantity: parseInt(req.body.quantity),
+            timestamp: new Date().toISOString(),
+            status: 'processed'
+        };
+
+        context.log(`Order processed: ${order.orderId}`);
+        
+        context.res = {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+            body: order
+        };
+    } catch (error) {
+        context.log.error('Error processing order:', error);
+        context.res = {
+            status: 500,
+            body: { error: "Internal server error" }
+        };
+    }
+};
+```
+
+#### Function Configuration (`function.json`)
+```json
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["post"],
+      "route": "orders"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}
+```
+
+### 🔗 **Backend Integration**
+
+The Express.js backend now includes a new route that integrates with the Azure Function:
+
+#### Orders Route (`src/backend/routes/orders.js`)
+```javascript
+const express = require('express');
+const axios = require('axios');
+const router = express.Router();
+
+// POST /api/orders - Process order via Azure Function
+router.post('/', async (req, res) => {
+    const requestId = generateRequestId();
+    
+    try {
+        console.log(`[${requestId}] Processing order request:`, req.body);
+        
+        // Call Azure Function
+        const functionResponse = await axios.post(
+            `${process.env.FUNCTION_URL}/api/orders`,
+            req.body,
+            { 
+                headers: { 'Content-Type': 'application/json' },
+                timeout: 10000 
+            }
+        );
+        
+        console.log(`[${requestId}] Function response:`, functionResponse.status);
+        res.json(functionResponse.data);
+        
+    } catch (error) {
+        console.error(`[${requestId}] Order processing failed:`, error.message);
+        res.status(500).json({ 
+            error: 'Order processing failed',
+            requestId 
+        });
+    }
+});
+
+module.exports = router;
+```
+
+### 🚀 **Deployment & CI/CD**
+
+#### GitHub Actions Workflow (`.github/workflows/deploy.yml`)
+
+The deployment pipeline now includes parallel deployment of both App Service and Azure Functions:
+
+```yaml
+jobs:
+  test:
+    # Validates both backend and functions code
+    
+  deploy-infrastructure:
+    # Provisions Azure resources (App Service + Function App)
+    
+  deploy-backend:
+    # Deploys Express.js app to App Service
+    needs: deploy-infrastructure
+    
+  deploy-functions:
+    # Deploys Azure Functions independently
+    needs: deploy-infrastructure
+    steps:
+      - name: Deploy Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ needs.deploy-infrastructure.outputs.functionAppName }}
+          package: src/functions
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          
+  health-check:
+    # Tests both services after deployment
+    needs: [deploy-backend, deploy-functions]
+```
+
+### 🧪 **Testing the Implementation**
+
+#### 1. **Local Development**
+```bash
+# Start Azure Functions locally
+cd src/functions
+npm start
+# Functions available at: http://localhost:7071
+
+# Test the function directly
+curl -X POST http://localhost:7071/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{"productId":"test-product","quantity":2}'
+```
+
+#### 2. **Test Backend Integration**
+```bash
+# Start backend server
+cd src/backend
+npm run dev
+# Backend available at: http://localhost:3001
+
+# Test via backend (calls function)
+curl -X POST http://localhost:3001/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{"productId":"integration-test","quantity":1}'
+```
+
+#### 3. **Expected Response**
+```json
+{
+  "orderId": "ord_a1b2c3d4-e5f6-7890-abcd-1234567890ef",
+  "productId": "test-product",
+  "quantity": 2,
+  "timestamp": "2025-10-29T10:30:00.000Z",
+  "status": "processed"
+}
+```
+
+### 📋 **Setup & Deployment Steps**
+
+#### Prerequisites
+- Azure subscription with Function App support
+- GitHub repository with secrets configured
+- Azure CLI installed locally
+
+#### 1. **Environment Configuration**
+```bash
+# Copy and configure environment variables
+cp .env.example .env
+
+# Add Function App URL to .env
+FUNCTION_URL=https://func-ecomm-dev.azurewebsites.net
+```
+
+#### 2. **GitHub Secrets Required**
+```
+AZURE_CREDENTIALS - Azure service principal for infrastructure deployment
+AZURE_FUNCTIONAPP_PUBLISH_PROFILE - Function App publish profile from Azure Portal
+```
+
+#### 3. **Deploy via GitHub Actions**
+```bash
+# Push to main branch triggers deployment
+git add .
+git commit -m "Add Azure Functions integration"
+git push origin 02-functions
+
+# Or manually trigger deployment
+# Go to GitHub Actions → Deploy E-commerce App with Functions → Run workflow
+```
+
+#### 4. **Verify Deployment**
+```bash
+# Test deployed function
+curl -X POST https://func-ecomm-dev.azurewebsites.net/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{"productId":"deployment-test","quantity":1}'
+
+# Test backend integration
+curl -X POST https://webapp-ecomm-dev.azurewebsites.net/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{"productId":"backend-test","quantity":3}'
+```
+
+### 🎯 **What's Next: Module 03 - Blob Storage**
+
+In the next module, we'll add **Azure Blob Storage** to handle:
+- **Product Image Storage**: Upload and serve product images
+- **Order Receipt Storage**: Store PDF receipts for completed orders
+- **Document Management**: Handle user uploads and downloads
+- **CDN Integration**: Serve static content globally via Azure CDN
+
+**Coming Features:**
+- Image upload functionality in the frontend
+- Blob storage integration in Azure Functions
+- Automated thumbnail generation
+- Secure file access with SAS tokens
+
+---
+
 ## 📚 Course Modules (Branches)
 
 | Branch | Module | Azure Services | Description |
 |--------|--------|----------------|-------------|
 | `01-app-service` | Web App Basics | App Service | Simple React + Node.js web app |
-| `02-functions` | Serverless Computing | Azure Functions | Add serverless background processing |
+| `02-functions` | **Serverless Computing** | **Azure Functions** | **HTTP-triggered functions for order processing** |
 | `03-blob-storage` | File Storage | Blob Storage | Product image upload/retrieval |
 | `04-cosmos-db` | NoSQL Database | Cosmos DB | Replace in-memory data with NoSQL |
 | `05-identity-msal` | Authentication | Microsoft Identity | User authentication with MSAL |
@@ -66,13 +348,25 @@ This hands-on course teaches Azure development through a real-world e-commerce a
 ```
 ├── src/
 │   ├── frontend/          # React frontend application
-│   └── backend/           # Node.js Express backend
+│   ├── backend/           # Node.js Express backend
+│   │   ├── routes/
+│   │   │   └── orders.js  # 🆕 Azure Functions integration routes
+│   │   └── server.js      # Updated with orders routes
+│   └── functions/         # 🆕 Azure Functions
+│       ├── OrderProcessor/
+│       │   ├── index.js   # Function logic
+│       │   └── function.json # Function bindings
+│       ├── host.json      # Functions runtime config
+│       ├── package.json   # Function dependencies
+│       └── local.settings.json # Local dev settings
 ├── infrastructure/
 │   └── bicep/            # Azure infrastructure as code
 ├── .github/
-│   └── workflows/        # CI/CD pipelines
+│   └── workflows/
+│       └── deploy.yml    # 🆕 Updated with Functions deployment
 ├── docs/                 # Additional documentation
 ├── .env.example         # Environment variables template
+├── IMPLEMENTATION-SUMMARY.md # 🆕 Module 02 summary
 └── README.md           # This file
 ```
 
@@ -128,7 +422,7 @@ The e-commerce demo includes:
 ### Beginner Track
 Start with branches 1-4 to learn basic Azure web development:
 1. `01-app-service` - Web app deployment
-2. `02-functions` - Serverless computing
+2. **`02-functions` - Serverless computing** ⭐ **(Current Module)**
 3. `03-blob-storage` - File storage
 4. `04-cosmos-db` - NoSQL database
 

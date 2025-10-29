@@ -1,0 +1,30 @@
+{
+  "name": "az204-functions",
+  "version": "1.0.0",
+  "description": "Azure Functions for AZ-204 E-commerce Application",
+  "main": "index.js",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "npm install",
+    "build": "echo \"No build step required for JavaScript functions\""
+  },
+  "dependencies": {
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.5455"
+  },
+  "engines": {
+    "node": "~18"
+  },
+  "keywords": [
+    "azure",
+    "functions",
+    "serverless",
+    "ecommerce",
+    "orders"
+  ],
+  "author": "AZ-204 Course",
+  "license": "MIT"
+}
