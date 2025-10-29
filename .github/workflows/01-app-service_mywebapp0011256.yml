@@ -41,15 +41,18 @@ jobs:
         run: npm ci
 
       - name: Build frontend
-        working-directory: ./src/ecommerce-frontend
+        working-directory: ./src/frontend
         run: npm run build
 
+      # Install backend dependencies  
+      - name: Install backend dependencies
+        working-directory: ./src/backend
+        run: npm ci
 
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+      # Run backend tests if available
+      - name: Test backend
+        working-directory: ./src/backend
+        run: npm test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
