@@ -38,7 +38,7 @@ jobs:
         env:
           CI: 'true'
           NPM_CONFIG_PRODUCTION: 'false'
-        run: npm ci
+        run: npm install
 
       - name: Build frontend
         working-directory: ./src/frontend
@@ -47,7 +47,7 @@ jobs:
       # Install backend dependencies  
       - name: Install backend dependencies
         working-directory: ./src/backend
-        run: npm ci
+        run: npm install
 
       # Run backend tests if available
       - name: Test backend
