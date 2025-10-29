@@ -38,7 +38,7 @@ let products = [
     description: 'High-quality wireless headphones with noise cancellation',
     price: 199.99,
     category: 'Electronics',
-    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+    imageUrl: '/images/headphones.svg',
     stock: 50,
     featured: true,
     createdAt: new Date().toISOString()
@@ -49,7 +49,7 @@ let products = [
     description: 'Advanced fitness tracking with heart rate monitoring',
     price: 299.99,
     category: 'Wearables',
-    imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop',
+    imageUrl: '/images/smartwatch.svg',
     stock: 30,
     featured: true,
     createdAt: new Date().toISOString()
@@ -60,7 +60,7 @@ let products = [
     description: 'Professional-grade coffee maker with programmable settings',
     price: 149.99,
     category: 'Appliances',
-    imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop',
+    imageUrl: '/images/coffee-maker.svg',
     stock: 25,
     featured: false,
     createdAt: new Date().toISOString()
@@ -71,7 +71,7 @@ let products = [
     description: 'Precision gaming mouse with customizable RGB lighting',
     price: 79.99,
     category: 'Electronics',
-    imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop',
+    imageUrl: '/images/gaming-mouse.svg',
     stock: 75,
     featured: false,
     createdAt: new Date().toISOString()
@@ -82,7 +82,7 @@ let products = [
     description: 'Portable waterproof speaker with deep bass',
     price: 129.99,
     category: 'Electronics',
-    imageUrl: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop',
+    imageUrl: '/images/bluetooth-speaker.svg',
     stock: 40,
     featured: true,
     createdAt: new Date().toISOString()
@@ -93,7 +93,7 @@ let products = [
     description: 'Non-slip eco-friendly yoga mat with carrying strap',
     price: 49.99,
     category: 'Sports',
-    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop',
+    imageUrl: '/images/yoga-mat.svg',
     stock: 60,
     featured: false,
     createdAt: new Date().toISOString()
