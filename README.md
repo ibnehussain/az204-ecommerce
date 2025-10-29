@@ -2,6 +2,8 @@
 
 This repository contains a progressive e-commerce application that demonstrates integrating various Azure services step by step. Each branch represents a working version of the application with new Azure services added incrementally.
 
+> Quick update: branch `02-functions` — local edit on 2025-10-29 to add documentation and CI/CD workflow updates.
+
 ## 🎯 Course Overview
 
 This hands-on course teaches Azure development through a real-world e-commerce application. Starting with a simple web app, we progressively add Azure services to build a complete, production-ready solution.
