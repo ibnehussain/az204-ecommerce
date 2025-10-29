@@ -6,7 +6,7 @@
   "scripts": {
     "install:all": "cd src/backend && npm install && cd ../frontend && npm install",
     "start:backend": "cd src/backend && npm start",
-    "start:frontend": "cd src/frontend && npm start", 
+    "start:frontend": "cd src/frontend && npm start",
     "dev:backend": "cd src/backend && npm run dev",
     "dev:frontend": "cd src/frontend && npm start",
     "test": "npm run test:backend && npm run test:frontend",
@@ -34,5 +34,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ibnehussain/az204-ecommerce.git"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
   }
 }
