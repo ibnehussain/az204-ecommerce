@@ -155,19 +155,11 @@ jobs:
         run: |
           echo "Current directory contents:"
           ls -la
-          echo "Checking deploy-package directory:"
-          if [ -d "deploy-package" ]; then
-            ls -la deploy-package/
-            cd deploy-package
-            if [ -f "package.json" ]; then
-              echo "Installing production dependencies..."
-              npm install --production --no-optional
-            else
-              echo "No package.json found in deploy-package"
-              exit 1
-            fi
+          if [ -f "package.json" ]; then
+            echo "Installing production dependencies..."
+            npm install --production --no-optional
           else
-            echo "deploy-package directory not found"
+            echo "No package.json found"
             exit 1
           fi
 
