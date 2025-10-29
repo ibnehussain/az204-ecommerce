@@ -174,11 +174,10 @@ jobs:
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         timeout-minutes: 10
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'mywebapp0011256'
-          slot-name: 'Production'
-          package: deploy-package
+          package: '.' # Use current directory instead of deploy-package
 
-          
+
 
