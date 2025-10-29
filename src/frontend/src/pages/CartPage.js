@@ -38,7 +38,19 @@ const CartPage = () => {
             {items.map(item => (
               <div key={item.id} className="cart-item">
                 <div className="cart-item-image">
-                  📦
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '4px'
+                    }}
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
+                    }}
+                  />
                 </div>
                 
                 <div className="cart-item-details">

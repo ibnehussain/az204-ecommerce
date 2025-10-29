@@ -140,7 +140,19 @@ const HomePage = () => {
               {featuredProducts.map(product => (
                 <div key={product.id} className="product-card">
                   <div className="product-image">
-                    📦 Product Image
+                    <img 
+                      src={product.imageUrl} 
+                      alt={product.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '4px'
+                      }}
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
+                      }}
+                    />
                   </div>
                   <div className="product-info">
                     <h3 className="product-name">{product.name}</h3>

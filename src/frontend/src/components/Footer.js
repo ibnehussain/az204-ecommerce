@@ -49,7 +49,10 @@ const Footer = () => {
           textAlign: 'center',
           color: '#ccc'
         }}>
-          <p>&copy; 2024 Azure Developer Course. This is a demo application for educational purposes.</p>
+          <p>&copy; 2025 Azhar. All rights reserved.</p>
+          <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
+            Azure Developer Course - Demo application for educational purposes.
+          </p>
         </div>
       </div>
     </footer>

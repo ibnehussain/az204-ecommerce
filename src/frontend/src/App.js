@@ -1,3 +1,10 @@
+/**
+ * Azure E-commerce Demo - Frontend Application
+ * © 2025 Azhar. All rights reserved.
+ * 
+ * React application providing the user interface for the e-commerce demo
+ */
+
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';

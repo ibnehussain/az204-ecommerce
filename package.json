@@ -1,0 +1,38 @@
+{
+  "name": "azure-ecommerce-demo",
+  "version": "1.0.0",
+  "description": "Full-stack e-commerce demo for Azure Developer Course",
+  "private": true,
+  "scripts": {
+    "install:all": "cd src/backend && npm install && cd ../frontend && npm install",
+    "start:backend": "cd src/backend && npm start",
+    "start:frontend": "cd src/frontend && npm start", 
+    "dev:backend": "cd src/backend && npm run dev",
+    "dev:frontend": "cd src/frontend && npm start",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd src/backend && npm test",
+    "test:frontend": "cd src/frontend && npm test -- --watchAll=false",
+    "build": "cd src/frontend && npm run build",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd src/backend && npm run lint",
+    "lint:frontend": "cd src/frontend && npm run lint"
+  },
+  "keywords": [
+    "azure",
+    "ecommerce",
+    "nodejs",
+    "react",
+    "express",
+    "fullstack"
+  ],
+  "author": "Azhar",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibnehussain/az204-ecommerce.git"
+  }
+}

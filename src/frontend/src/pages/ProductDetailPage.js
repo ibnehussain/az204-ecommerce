@@ -81,13 +81,20 @@ const ProductDetailPage = () => {
             height: '400px',
             background: '#f8f9fa',
             borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--text-secondary)',
-            fontSize: '4rem'
+            overflow: 'hidden'
           }}>
-            📦
+            <img 
+              src={product.imageUrl} 
+              alt={product.name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
+              }}
+            />
           </div>
         </div>
 
