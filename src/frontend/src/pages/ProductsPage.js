@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { productsAPI, categoriesAPI } from '../services/api';
 import { useCart } from '../contexts/CartContext';
@@ -16,14 +16,6 @@ const ProductsPage = () => {
   
   const { addItem } = useCart();
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [filters]);
-
   const fetchCategories = async () => {
     try {
       const response = await categoriesAPI.getAll();
@@ -33,7 +25,7 @@ const ProductsPage = () => {
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const params = {};
@@ -49,7 +41,15 @@ const ProductsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
