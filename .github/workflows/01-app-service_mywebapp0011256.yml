@@ -146,9 +146,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_649E04BF4BA243C9B2964661C816D1A8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1E827EB0892248BEB661D7F4502642C2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DAC412AC08344381805B54283C78BB07 }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # Install production dependencies in deployment package
       - name: Install production dependencies
