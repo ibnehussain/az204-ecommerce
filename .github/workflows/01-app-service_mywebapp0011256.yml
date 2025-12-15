@@ -168,7 +168,7 @@ jobs:
         timeout-minutes: 10
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'mywebapp0011256'
+          app-name: 'azureappdemo001' # Replace with your Web App name
           package: '.' # Use current directory instead of deploy-package
 
 
